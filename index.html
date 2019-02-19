@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Map</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script src="https://api-maps.yandex.ru/2.1/?apikey=1859b6c7-0a86-44d2-833c-a6d7b145f299&lang=ru_RU" type="text/javascript"></script>
+
+</head>
+<body>
+	<div class="wrapper">
+		<div class="address">
+			<label>Новая точка</label>
+			<input title="add address" placeholder="Введите адрес">
+			<label>Список точек</label>
+			<main class="list">
+				<ol></ol>
+				<span></span>
+			</main>
+		</div>
+		<div id="map"></div>
+	</div>
+</body>
+<style>
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+.wrapper {
+	width: 650px;
+	padding-top: 20px;
+	text-align: center;
+}
+.address {
+	float: left;
+	width: 200px;
+	text-align: center;
+}
+#map {
+	float: right;
+	width: 420px;
+	height: 420px;
+}
+input {
+	width: 200px;
+	padding: 3px;
+	font-size: 0.9rem;
+	margin: 5px;
+}
+ol {
+	width: 40px;
+}
+.list {
+	position: relative;
+	margin-top: 5px;
+	padding-left: 2rem;
+	text-align: left;
+}
+label {
+	display: inline-block;
+	width: 100%;
+}
+.delete {
+	position: absolute;
+	right: 32px;
+	top: 5px;
+	width: 32px;
+	height: 12px;
+	font-size: 0.7rem;
+	opacity: 0.3;
+}
+.delete:before, .delete:after {
+	position: absolute;
+	left: 15px;
+	content: ' ';
+	height: 12px;
+	width: 2px;
+	background-color: #333;
+}
+.delete:before {
+	transform: rotate(45deg);
+}
+.delete:after {
+	transform: rotate(-45deg);
+}
+.delete:hover {
+	cursor: pointer;
+	opacity: 1;
+}
+</style>
+<script>
+	'use strict';
+	$(document).ready(function() {
+		app.initialize();
+	});
+	ymaps.ready(function() {
+		app.map();
+	});
+
+	var app = {
+		initialize: function() {
+			app.events();
+		},
+		events: function() {
+			$('input').on('keypress', function(e) {
+				if (e.which == 13) {
+					var points = [];
+					var point = {};
+					point.pointName = $(this).val();
+					var key = 'pointName';
+					console.log(point[key]);
+					points.push(point);
+					console.log(point);
+					console.log(points);
+					
+					app.render(points);
+					app.methods.emptyCell();
+				}
+			});
+			$('span').on('click', function() {
+				$('ol').hide();
+				$('span').hide();
+			});
+		},
+		methods: {
+			emptyCell: function() {
+				$('input').val('');
+			},
+		},
+		map: function() {
+			var map = new ymaps.Map("map", {
+				center: [55.742793, 37.6154],
+				zoom: 12
+			});
+		},
+		render: function(points) {
+			var html = '';
+			for (var i = 0; i < points.length; i++) {
+				html = html +
+					'<li>' + points[i].pointName + 
+					'</li>'
+				;
+			}
+			$('main ol').html(html);
+			$('span').addClass("delete");
+		}
+	}
+</script>
+</html>
